@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geography Quiz Game</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    #map { height: 100vh; }
+    .question-panel { position: absolute; top: 10px; left: 10px; background-color: rgba(255, 255, 255, 0.8); padding: 15px; z-index: 999; }
+    .btn { width: 100%; margin-bottom: 10px; }
+    #feedback { margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3 question-panel">
+        <h3>Geography Quiz</h3>
+        <div id="question-text"></div>
+        <div id="feedback"></div>
+      </div>
+      <div class="col-md-9 p-0">
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/esri-leaflet"></script>
+  <script src="https://unpkg.com/esri-leaflet-geocoder"></script>
+  <script src="https://unpkg.com/leaflet-search"></script>
+
+  <script>
+    // Initialize map
+    const map = L.map('map').setView([20, 0], 2); // Set to global view
+    L.esri.basemapLayer('Topographic').addTo(map);
+
+    // Countries GeoJSON (or you can load from a service)
+    const countriesGeoJsonUrl = 'https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/world-countries.geojson';
+    
+    // Initialize country boundaries layer
+    let countriesLayer;
+    
+    fetch(countriesGeoJsonUrl)
+      .then(response => response.json())
+      .then(data => {
+        countriesLayer = L.geoJSON(data, {
+          onEachFeature: (feature, layer) => {
+            // Add a popup to each country
+            const countryName = feature.properties.name;
+            layer.bindPopup(`<strong>${countryName}</strong>`);
+
+            // Make the popup clickable
+            layer.on('click', function () {
+              handleCountryClick(feature);
+            });
+          }
+        }).addTo(map);
+      });
+
+    // Question and options
+    const questions = [
+      {
+        question: 'Which country is known as the Land of the Rising Sun?',
+        correctAnswer: 'Japan',
+        coordinates: [36.2048, 138.2529] // Japan's approximate coordinates
+      },
+      {
+        question: 'Which country has the longest river in the world?',
+        correctAnswer: 'Egypt',
+        coordinates: [25.7617, 89.2200] // Nile River's general location (Egypt)
+      },
+      // Add more questions here...
+    ];
+
+    let currentQuestionIndex = 0;
+
+    // Set up the question display
+    function displayQuestion() {
+      const q = questions[currentQuestionIndex];
+      $('#question-text').text(q.question);
+      $('#feedback').text('');
+    }
+
+    // Handle when a country is clicked
+    function handleCountryClick(feature) {
+      // Access the country name from the feature's properties (this will depend on your GeoJSON structure)
+      const clickedCountry = feature.properties.name; // Ensure 'name' is the correct property in your GeoJSON
+
+      const currentQuestion = questions[currentQuestionIndex];
+      const feedbackText = clickedCountry === currentQuestion.correctAnswer
+        ? 'Correct! Well done.'
+        : `Wrong! The correct answer is ${currentQuestion.correctAnswer}.`;
+
+      $('#feedback').text(feedbackText);
+
+      // Optionally, zoom into the country after clicking
+      if (clickedCountry === currentQuestion.correctAnswer) {
+        const countryBounds = feature.geometry.coordinates[0]; // Get the bounds of the clicked country
+        map.fitBounds(countryBounds); // Zoom to the country
+      }
+
+      // Move to the next question after a short delay
+      setTimeout(() => {
+        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+        displayQuestion();
+      }, 2000); // Delay before showing next question
+    }
+
+    // Initialize the first question
+    displayQuestion();
+
+  </script>
+</body>
+</html>
+
