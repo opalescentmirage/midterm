@@ -41,8 +41,9 @@
             "esri/widgets/Locate", 
             "esri/widgets/Search", 
             "esri/widgets/Measurement", 
-            "esri/layers/FeatureLayer"
-        ], (esriConfig, Map, MapView, Locate, Search, Measurement, FeatureLayer) => {
+            "esri/layers/FeatureLayer",
+            "esri/Graphic"
+        ], (esriConfig, Map, MapView, Locate, Search, Measurement, FeatureLayer, Graphic) => {
             // Adding the API key
             esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurEBCF4Df63a-YurcgYiKsA1VscU-cZ9XIfRd5YY06uCgQ7h2cElqsdaqDZA7wtk01kolLsKPtW7pcuz7t96FnfjqG-V7ll_VvxdjvcShznPA09rj-R8aISApq9NYAkGYKje94CHNO97Q_go1VWtvzfHZfpfeDwu_hmPB55PChXJAF4Ztd5lboW8sA-Jr6z3URE88Kf2DcteZpLgzDGQj-qA.AT1_RYtzMyNa";
 
@@ -93,6 +94,37 @@
             view.ui.add(measurementWidget, {
                 position: "bottom-right"
             });
+
+            // Add a point at the University of Florida
+            const point = {
+                type: "point",
+                longitude: -82.3549,
+                latitude: 29.6516
+            };
+
+            const markerSymbol = {
+                type: "simple-marker",
+                color: [226, 119, 40], // Orange
+                outline: {
+                    color: [255, 255, 255], // White
+                    width: 2
+                }
+            };
+
+            const pointGraphic = new Graphic({
+                geometry: point,
+                symbol: markerSymbol,
+                attributes: {
+                    Name: "University of Florida",
+                    Description: "A major, public, comprehensive, land-grant, research university."
+                },
+                popupTemplate: {
+                    title: "{Name}",
+                    content: "{Description}"
+                }
+            });
+
+            view.graphics.add(pointGraphic);
         });
     </script>
 </head>
