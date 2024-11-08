@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>Data Collector for AGOL</title>
+    <title>Splash Popup Example</title>
 
     <style>
         html, body, #viewDiv {
@@ -29,6 +29,41 @@
         }
 
         .addRecordBtn:hover {
+            background-color: #005a87;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .splash-content {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .splash-content button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #f7a9e1;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .splash-content button:hover {
             background-color: #005a87;
         }
 
@@ -122,17 +157,28 @@
                     Description: "A major, public, comprehensive, land-grant, research university."
                 },
                 popupTemplate: {
-                    title: "{Name}",
-                    content: "{Description}"
+                    title: "{UF}",
+                    content: "{Has Library West, Marston, and Smathers!}"
                 }
             });
 
             view.graphics.add(pointGraphic);
         });
+
+        function closeSplash() {
+            document.getElementById('splash').style.display = 'none';
+        }
     </script>
 </head>
 <body>
     <a href="https://survey123.arcgis.com/share/55a1dcb95cfe435a8b16cebfd83afef4" target="_blank" class="addRecordBtn">Add Record</a>
     <div id="viewDiv"></div>
+    <div class="splash" id="splash">
+        <div class="splash-content">
+            <h1>Welcome to my Midterm!</h1>
+            <p>I welcome users to add libraries they know of to the map.</p>
+            <button onclick="closeSplash()">Close</button>
+        </div>
+    </div>
 </body>
 </html>
