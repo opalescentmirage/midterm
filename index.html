@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>Splash Popup Example</title>
+    <title>Library Midterm</title>
 
     <style>
         html, body, #viewDiv {
@@ -119,17 +119,6 @@
             view.ui.add(searchWidget, {
                 position: "top-left",
                 index: 2
-            });
-
-            // Add the measurement widget
-            const measurementWidget = new Measurement({
-                view: view,
-                activeTool: "distance" // Set the initial active tool to distance measurement
-            });
-
-            // Add the measurement widget to the top right corner of the view
-            view.ui.add(measurementWidget, {
-                position: "bottom-right"
             });
 
             // Add a point at the University of Florida
